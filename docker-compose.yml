@@ -1,0 +1,46 @@
+version: "3.8"
+services:
+  db:
+    image: postgres:15
+    container_name: flexPostgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: ${POSTGRES_DB:-mydb}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-mydb}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    ports:
+      - "${POSTGRES_PORT:-5433}:5432"
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: flexWebApi
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    env_file:
+      - .env
+    environment:
+      NODE_ENV: production
+      # Dentro do container, a DB é acessível pelo hostname do serviço Docker (db) e porta interna 5432
+      DATABASE_URL: "postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@db:5432/${POSTGRES_DB:-mydb}?schema=public"
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./:/usr/src/app:ro
+    # evita reiniciar automático se entrypoint falhar repetidamente
+    deploy:
+      restart_policy:
+        condition: on-failure
+
+volumes:
+  pgdata:

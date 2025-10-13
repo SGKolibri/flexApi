@@ -41,3 +41,6 @@ EXPOSE 3000
 
 # entrypoint irá rodar migrações e em seguida start
 # CMD ["./entrypoint.sh"]
+
+# start padrão: usar node direto no dist
+CMD ["node", "dist/main.js"]

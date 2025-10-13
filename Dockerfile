@@ -43,4 +43,4 @@ EXPOSE 3000
 # CMD ["./entrypoint.sh"]
 
 # start padrão: usar node direto no dist
-CMD ["node", "dist/main.js"]
+CMD ["node", "dist/src/main.js"]

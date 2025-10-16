@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../../prisma/prisma.service';
-import { IUserRepository } from '../interfaces/user.interface';
+import { IUserRepository, UserRole } from '../interfaces/user.interface';
 import { User } from '@prisma/client';
 import { UpdateUserDto } from '../dto/update-user.dto';
 import { CreateUserDto } from '../dto/create-user.dto';
@@ -31,5 +31,10 @@ export class PrismaUserRepository implements IUserRepository {
 
   async delete(id: string): Promise<User> {
     return this.prisma.user.delete({ where: { id } });
+  }
+
+  async isAdmin(id: string): Promise<boolean> {
+    const user = await this.prisma.user.findUnique({ where: { id } });
+    return user?.role === UserRole.ADMIN;
   }
 }

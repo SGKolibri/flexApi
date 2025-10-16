@@ -6,54 +6,58 @@ import {
   Param,
   Put,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
 import { UserService } from '../service/user.service';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { UpdateUserDto } from '../dto/update-user.dto';
+import { AuthGuard } from 'src/guards/auth.guard';
+import { UserRole } from '../interfaces/user.interface';
 
+@UseGuards(AuthGuard)
 @ApiTags('users')
 @Controller('users')
 export class UserController {
   constructor(private readonly service: UserService) {}
 
   @Post()
-  @ApiOperation({ summary: 'Create a new user' })
-  @ApiResponse({ status: 201, description: 'User created successfully.' })
-  create(@Body() dto: CreateUserDto) {
-    return this.service.create(dto);
+  @ApiOperation({ summary: 'Cria um novo usuário' })
+  @ApiResponse({ status: 201, description: 'Usuário criado com sucesso.' })
+  create(@Body() data: CreateUserDto) {
+    return this.service.create(data);
   }
 
   @Get()
-  @ApiOperation({ summary: 'List all users' })
-  @ApiResponse({ status: 200, description: 'Array of users returned.' })
+  @ApiOperation({ summary: 'Lista todos os usuários' })
+  @ApiResponse({ status: 200, description: 'Array de usuários retornado.' })
   findAll() {
     return this.service.findAll();
   }
 
   @Get(':id')
-  @ApiOperation({ summary: 'Get a user by id' })
+  @ApiOperation({ summary: 'Retorna um usuário pelo ID' })
   @ApiParam({ name: 'id', type: String })
-  @ApiResponse({ status: 200, description: 'User found.' })
-  @ApiResponse({ status: 404, description: 'User not found.' })
+  @ApiResponse({ status: 200, description: 'Usuário encontrado.' })
+  @ApiResponse({ status: 404, description: 'Usuário não encontrado.' })
   findOne(@Param('id') id: string) {
     return this.service.findOne(id);
   }
 
   @Put(':id')
-  @ApiOperation({ summary: 'Update a user by id' })
+  @ApiOperation({ summary: 'Atualiza um usuário pelo ID' })
   @ApiParam({ name: 'id', type: String })
-  @ApiResponse({ status: 200, description: 'User updated successfully.' })
-  @ApiResponse({ status: 404, description: 'User not found.' })
+  @ApiResponse({ status: 200, description: 'Usuário atualizado com sucesso.' })
+  @ApiResponse({ status: 404, description: 'Usuário não encontrado.' })
   update(@Param('id') id: string, @Body() dto: UpdateUserDto) {
     return this.service.update(id, dto);
   }
 
   @Delete(':id')
-  @ApiOperation({ summary: 'Delete a user by id' })
+  @ApiOperation({ summary: 'Remove um usuário pelo ID' })
   @ApiParam({ name: 'id', type: String })
-  @ApiResponse({ status: 200, description: 'User removed successfully.' })
-  @ApiResponse({ status: 404, description: 'User not found.' })
+  @ApiResponse({ status: 200, description: 'Usuário removido com sucesso.' })
+  @ApiResponse({ status: 404, description: 'Usuário não encontrado.' })
   remove(@Param('id') id: string) {
     return this.service.remove(id);
   }

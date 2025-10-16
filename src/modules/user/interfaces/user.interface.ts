@@ -14,4 +14,5 @@ export interface IUserRepository {
   findByEmail(email: string): Promise<User | null>;
   update(id: string, data: UpdateUserDto): Promise<User>;
   delete(id: string): Promise<User>;
+  isAdmin(id: string): Promise<boolean>;
 }

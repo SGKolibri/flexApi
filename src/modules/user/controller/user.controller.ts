@@ -13,7 +13,6 @@ import { UserService } from '../service/user.service';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { UpdateUserDto } from '../dto/update-user.dto';
 import { AuthGuard } from 'src/guards/auth.guard';
-import { UserRole } from '../interfaces/user.interface';
 
 @UseGuards(AuthGuard)
 @ApiTags('users')

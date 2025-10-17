@@ -37,4 +37,12 @@ export class PrismaUserRepository implements IUserRepository {
     const user = await this.prisma.user.findUnique({ where: { id } });
     return user?.role === UserRole.ADMIN;
   }
+
+  async findAdmins(): Promise<User[]> {
+    return this.prisma.user.findMany({
+      where: {
+        role: UserRole.ADMIN,
+      },
+    });
+  }
 }

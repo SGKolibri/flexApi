@@ -66,4 +66,9 @@ export class UserService {
     if (!user) throw new NotFoundException('Usuário não encontrado');
     return this.userRepo.delete(id);
   }
+  
+   async getAdminEmails(): Promise<string[]> {
+    const admins = await this.userRepo.findAdmins();
+    return admins.map(admin => admin.email);
+  }
 }

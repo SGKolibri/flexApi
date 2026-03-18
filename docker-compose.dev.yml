@@ -24,21 +24,22 @@ services:
       dockerfile: Dockerfile
     container_name: flexWebApi
     restart: unless-stopped
+    user: root
     depends_on:
       db:
         condition: service_healthy
     env_file:
       - .env
     environment:
-      NODE_ENV: production
+      NODE_ENV: development
       # Dentro do container, a DB é acessível pelo hostname do serviço Docker (db) e porta interna 5432
       DATABASE_URL: "postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@db:5432/${POSTGRES_DB}?schema=public"
     ports:
       - "3000:3000"
-    # evita reiniciar automático se entrypoint falhar repetidamente
-    deploy:
-      restart_policy:
-        condition: on-failure
+    volumes:
+      - ./:/usr/src/app
+      - /usr/src/app/node_modules
+    command: sh -c "npx prisma generate && npm run start:dev"
 
 volumes:
   pgdata:

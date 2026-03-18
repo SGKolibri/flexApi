@@ -1,5 +1,6 @@
 generator client {
   provider = "prisma-client-js"
+  binaryTargets = ["native", "debian-openssl-3.0.x"]
 }
 
 datasource db {
@@ -17,18 +18,20 @@ model User {
   cpf       String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  links Link[]
 }
 
 model Form {
   id                String   @id @default(uuid())
   nome              String
-  email             String
+  email             String   @unique
   telefone          String
   nomeEmpresa       String
   siteObjetivo      String
   publicoAlvo       String
   siteReferencia    String
-  tipoConteudo      String
+  tipoConteudo      String?
   dominio           String?
   emailProfissional String?
   funcionalidades   String?
@@ -40,4 +43,81 @@ model Form {
 enum Role {
   USER
   ADMIN
+}
+
+enum LinkStatus {
+  PENDENTE
+  RESPONDIDO
+  EXPIRADO
+}
+
+enum CanalEnvio {
+  WHATSAPP
+  EMAIL
+  MANUAL
+}
+
+model Cliente {
+  id        String   @id @default(cuid())
+  nome      String
+  email     String?
+  telefone  String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  links Link[]
+}
+
+model Ferramenta {
+  id        String   @id @default(cuid())
+  nome      String
+  descricao String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  links Link[]
+}
+
+model Link {
+  id                String     @id @default(cuid())
+  token             String     @unique
+  url               String
+  clienteId         String
+  ferramentaId      String
+  tecnicoId         String
+  treinamentoNumero Int
+  treinamentoTotal  Int
+  validadeHoras     Int
+  status            LinkStatus @default(PENDENTE)
+  canalEnvio        CanalEnvio?
+  enviadoEm         DateTime?
+  primeiroAcessoEm  DateTime?
+  expiradoEm        DateTime
+  respondidoEm      DateTime?
+  observacaoInterna String?
+  createdAt         DateTime   @default(now())
+  updatedAt         DateTime   @updatedAt
+
+  cliente    Cliente    @relation(fields: [clienteId], references: [id])
+  ferramenta Ferramenta @relation(fields: [ferramentaId], references: [id])
+  tecnico    User       @relation(fields: [tecnicoId], references: [id])
+  resposta   Resposta?
+
+  @@index([status])
+  @@index([createdAt])
+  @@index([clienteId])
+  @@index([ferramentaId])
+  @@index([tecnicoId])
+}
+
+model Resposta {
+  id         String   @id @default(cuid())
+  linkId     String   @unique
+  nota       Int
+  label      String
+  emoji      String
+  comentario String?
+  createdAt  DateTime @default(now())
+
+  link Link @relation(fields: [linkId], references: [id])
 }

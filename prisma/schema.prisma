@@ -1,5 +1,6 @@
 generator client {
   provider = "prisma-client-js"
+  binaryTargets = ["native", "debian-openssl-3.0.x"]
 }
 
 datasource db {
@@ -22,13 +23,13 @@ model User {
 model Form {
   id                String   @id @default(uuid())
   nome              String
-  email             String
+  email             String   @unique
   telefone          String
   nomeEmpresa       String
   siteObjetivo      String
   publicoAlvo       String
   siteReferencia    String
-  tipoConteudo      String
+  tipoConteudo      String?
   dominio           String?
   emailProfissional String?
   funcionalidades   String?

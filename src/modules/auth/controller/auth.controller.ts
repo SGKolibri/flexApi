@@ -5,7 +5,6 @@ import { ApiBody, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { AuthGuard } from 'src/guards/auth.guard';
 
 @Controller('auth')
-@UseGuards(AuthGuard)
 export class AuthController {
   constructor(private authService: AuthService) {}
 

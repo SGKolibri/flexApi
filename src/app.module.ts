@@ -6,6 +6,8 @@ import { UserModule } from './modules/user/user.module';
 import { FormModule } from './modules/form/form.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { LinkModule } from './modules/link/link.module';
+import { ClienteModule } from './modules/cliente/cliente.module';
+import { FerramentaModule } from './modules/ferramenta/ferramenta.module';
 
 @Module({
   imports: [
@@ -18,6 +20,8 @@ import { LinkModule } from './modules/link/link.module';
     FormModule,
     AuthModule,
     LinkModule,
+    ClienteModule,
+    FerramentaModule,
   ],
   controllers: [AppController],
   providers: [AppService],
